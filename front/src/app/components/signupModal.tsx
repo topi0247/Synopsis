@@ -52,4 +52,5 @@ const SignUpModal = memo(
   }
 );
 
+SignUpModal.displayName = "SignUpModal";
 export default SignUpModal;

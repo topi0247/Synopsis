@@ -34,5 +34,12 @@ module App
       g.helper false       # ヘルパー生成を無効化
       g.test_framework nil # テストフレームワークを無効化
     end
+
+    # クッキーを使うため
+    config.middleware.use ActionDispatch::Cookies
+    # セッションを使うため
+    config.middleware.use ActionDispatch::Session::CookieStore, key: '_synopsis_auth_token'
+    # クロスサイト時に必要な設定、ドメインが異なっても使えるようにする
+    config.action_dispatch.cookies_same_site_protection = :none
   end
 end

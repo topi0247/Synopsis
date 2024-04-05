@@ -54,4 +54,5 @@ const Headers = memo(() => {
   );
 });
 
+Headers.displayName = "Headers";
 export default Headers;
