@@ -1,4 +1,4 @@
-class Api::V1::Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
+class Api::V1::Users::OmniauthCallbacksController < DeviseTokenAuth::OmniauthCallbacksController
   # Googleからのレスポンスを処理するメソッド
   def google_oauth2
     # Googleからのレスポンスを処理するメソッド

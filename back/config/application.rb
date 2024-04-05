@@ -38,6 +38,9 @@ module App
       g.test_framework nil # テストフレームワークを無効化
     end
 
+    # タイムゾーンを日本時間に設定
+    config.i18n.default_locale = :ja
+
     # クッキーを使うため
     config.middleware.use ActionDispatch::Cookies
     # セッションを使うため

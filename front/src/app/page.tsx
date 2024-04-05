@@ -6,6 +6,7 @@ import LoginModal from "./components/loginModal";
 export default function Home() {
   const [isSignUpModalOpen, setIsSignUpModalOpen] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+
   return (
     <>
       <article className="w-full flex flex-col justify-center items-center gap-8">

@@ -50,8 +50,13 @@ end
 gem "devise"
 # トークンの方はRails7に対応していないので、githubから取得
 gem 'devise_token_auth', '>= 1.2.0', git: "https://github.com/lynndylanhurley/devise_token_auth"
+# 多言語用
+gem 'devise-i18n'
+# OAuth2.0用
 gem "omniauth"
+# GoogleのOAuth2.0用
 gem 'omniauth-google-oauth2'
+# CSRF対策用
 gem "omniauth-rails_csrf_protection"
 # フロントとバックを分けているので同じサイト判定させるためのgem
 gem 'rails_same_site_cookie'
