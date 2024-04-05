@@ -2,6 +2,9 @@ require_relative "boot"
 
 require "rails/all"
 
+# 開発環境でメール確認をするための設定
+require 'letter_opener_web' if Rails.env.development?
+
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)

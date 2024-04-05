@@ -9,6 +9,7 @@ services:
       MYSQL_DATABASE: my_app
     volumes:
       - mysql_data:/var/lib/mysql
+      - bundle_data:/usr/local/bundle
     ports:
       - "3306:3306"
   back:
@@ -38,3 +39,4 @@ services:
       - "8000:8000"
 volumes:
   mysql_data:
+  bundle_data:
