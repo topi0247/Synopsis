@@ -44,6 +44,7 @@ group :development do
   # Speed up commands on slow machines / big apps [https://github.com/rails/spring]
   # gem "spring"
   gem 'letter_opener_web'
+  gem 'annotate'
 end
 
 # 認証
@@ -53,7 +54,7 @@ gem 'devise_token_auth', '>= 1.2.0', git: "https://github.com/lynndylanhurley/de
 # 多言語用
 gem 'devise-i18n'
 # OAuth2.0用
-gem "omniauth"
+gem 'omniauth-oauth2'
 # GoogleのOAuth2.0用
 gem 'omniauth-google-oauth2'
 # CSRF対策用

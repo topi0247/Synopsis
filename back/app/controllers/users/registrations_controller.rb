@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 
-class Api::V1::Users::RegistrationsController < DeviseTokenAuth::RegistrationsController
+class Users::RegistrationsController < DeviseTokenAuth::RegistrationsController
 
   def create
     super do |resource|
       if resource.persisted?
         if resource.active_for_authentication?
+          # 自動ログイン
+          sign_in(resource_name, resource)
           # 認証トークンとユーザー情報を含むJSONを返す
           render json: {
             status: 'success',

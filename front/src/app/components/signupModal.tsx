@@ -29,8 +29,7 @@ const SignUpModal = memo(
       };
 
       const API_URL = process.env.NEXT_PUBLIC_API_URL;
-      const API_VERSION = process.env.NEXT_PUBLIC_API_VERSION;
-      const response = await fetch(`${API_URL}/api/${API_VERSION}/auth`, {
+      const response = await fetch(`${API_URL}/auth`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

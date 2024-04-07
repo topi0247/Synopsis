@@ -47,5 +47,7 @@ module App
     config.middleware.use ActionDispatch::Session::CookieStore, key: '_synopsis_auth_token'
     # クロスサイト時に必要な設定、ドメインが異なっても使えるようにする
     config.action_dispatch.cookies_same_site_protection = :none
+
+    config.action_controller.forgery_protection_origin_check = false
   end
 end

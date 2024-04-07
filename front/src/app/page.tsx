@@ -7,6 +7,11 @@ export default function Home() {
   const [isSignUpModalOpen, setIsSignUpModalOpen] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 
+  const handleLoginWIthGoogle = async () => {
+    const API_URL = process.env.NEXT_PUBLIC_API_URL;
+    window.location.href = `${API_URL}/auth/google_oauth2`;
+  };
+
   return (
     <>
       <article className="w-full flex flex-col justify-center items-center gap-8">
@@ -23,6 +28,12 @@ export default function Home() {
             className="bg-green-100 px-4 py-2 rounded hover:bg-green-400 transition-all"
           >
             ログイン
+          </button>
+          <button
+            onClick={() => handleLoginWIthGoogle()}
+            className="bg-green-100 px-4 py-2 rounded hover:bg-green-400 transition-all"
+          >
+            Googleでログイン
           </button>
         </div>
       </article>
