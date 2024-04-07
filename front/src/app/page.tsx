@@ -33,7 +33,7 @@ export default function Home() {
             onClick={() => handleLoginWIthGoogle()}
             className="bg-green-100 px-4 py-2 rounded hover:bg-green-400 transition-all"
           >
-            Googleでログイン
+            Login with Google
           </button>
         </div>
       </article>
