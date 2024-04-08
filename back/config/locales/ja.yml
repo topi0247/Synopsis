@@ -1,0 +1,4 @@
+ja:
+  devise_token_auth:
+    sessions:
+      bad_credentials: メールアドレスかパスワードが違います。

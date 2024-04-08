@@ -45,6 +45,8 @@ group :development do
   # gem "spring"
   gem 'letter_opener_web'
   gem 'annotate'
+  gem 'rubocop'
+  gem 'pry-byebug'
 end
 
 # 認証
