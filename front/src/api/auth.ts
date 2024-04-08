@@ -1,4 +1,4 @@
-class FetchAuth {
+class Auth {
   private API_URL = process.env.NEXT_PUBLIC_API_URL;
   private API_VERSION = process.env.NEXT_PUBLIC_API_VERSION;
 
@@ -33,19 +33,16 @@ class FetchAuth {
 
   // メアド・パスワードログイン
   async login(email: string, password: string) {
-    const response = await fetch(
-      `${this.API_URL}/api/${this.API_VERSION}/auth/sign_in`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
-      }
-    );
+    const response = await fetch(`${this.API_URL}/auth/sign_in`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email,
+        password,
+      }),
+    });
     const result = await response.json();
     if (result.status === "success") {
       return true;
@@ -56,18 +53,15 @@ class FetchAuth {
 
   // パスワード再設定
   async passwordReset(email: string) {
-    const response = await fetch(
-      `${this.API_URL}/api/${this.API_VERSION}/auth/password`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-        }),
-      }
-    );
+    const response = await fetch(`${this.API_URL}/auth/password`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email,
+      }),
+    });
     const result = await response.json();
     if (result.status === "success") {
       return true;

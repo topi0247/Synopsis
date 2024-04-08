@@ -14,7 +14,7 @@ Devise.setup do |config|
   # confirmation, reset password and unlock tokens in the database.
   # Devise will use the `secret_key_base` as its `secret_key`
   # by default. You can change it below and use your own secret key.
-  # config.secret_key = '9ae03b39df44e5b3b92d3fcd17a62310b3249f2ee49febe8842b031667d0e25422029b1a141c56c444344da87c42f0ad675f62b77d25abcdad835fb56d92cb5f'
+  # config.secret_key = '52be583dd50bf1396401c849adf337880ebc0996f09d535842b7cd551653270ad7b36495593b867043abbda17f31486310b56d5ed16a2879b36a1473c39ec952'
 
   # ==> Controller configuration
   # Configure the parent class to the devise controllers.
@@ -24,7 +24,7 @@ Devise.setup do |config|
   # Configure the e-mail address which will be shown in Devise::Mailer,
   # note that it will be overwritten if you use your own mailer class
   # with default "from" parameter.
-  config.mailer_sender = 'example@gmail.com'
+  config.mailer_sender = 'please-change-me-at-config-initializers-devise@example.com'
 
   # Configure the class responsible to send e-mails.
   # config.mailer = 'Devise::Mailer'
@@ -126,7 +126,7 @@ Devise.setup do |config|
   config.stretches = Rails.env.test? ? 1 : 12
 
   # Set up a pepper to generate the hashed password.
-  # config.pepper = '48ca36d8e66c919795c626d3dcdbefbb55c2be0e51a1034d5136e105e640f66afc147050edfe1cb8d40c4faac020646ce72b12c1c6f1b75015279eac7fdfdc44'
+  # config.pepper = '4d0f604c665c45ad334ea55bc8dae596db79b675ad38a1b40683e5772e83582dd7867b22e3d9a9a1a1a7b0d5de46ab086649eb950ee90a158c4cefacabeacc97'
 
   # Send a notification to the original email when the user's email is changed.
   # config.send_email_changed_notification = false
@@ -263,7 +263,7 @@ Devise.setup do |config|
   # should add them to the navigational formats lists.
   #
   # The "*/*" below is required to match Internet Explorer requests.
-  config.navigational_formats = [:json]
+  # config.navigational_formats = ['*/*', :html, :turbo_stream]
 
   # The default HTTP method used to sign out a resource. Default is :delete.
   config.sign_out_via = :delete
@@ -311,8 +311,15 @@ Devise.setup do |config|
   # changed. Defaults to true, so a user is signed in automatically after changing a password.
   # config.sign_in_after_change_password = true
 
-  config.omniauth :google_oauth2,
-                  ENV['GOOGLE_CLIENT_ID'],
-                  ENV['GOOGLE_CLIENT_SECRET']
-  OmniAuth.config.logger = Rails.logger if Rails.env.development?
+  # OmniAuth
+  config.omniauth :google_oauth2, Rails.application.credentials.google[:client_id], Rails.application.credentials.google[:client_secret], {
+    scope: 'email,profile',
+    prompt: 'select_account',
+    provider_ignores_state: Rails.env.development?,
+  }
+  config.omniauth :discord, Rails.application.credentials.discord[:client_id], Rails.application.credentials.discord[:client_secret], {
+    scope: 'email identify',
+    callback_url: 'http://localhost:3000/auth/discord/callback',
+    provider_ignores_state: Rails.env.development?,
+  }
 end

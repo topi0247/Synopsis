@@ -1,58 +1,43 @@
 "use client";
 import Link from "next/link";
-import React, { memo, useState } from "react";
-import SignUpModal from "./signupModal";
-import LoginModal from "./loginModal";
+import React, { useEffect } from "react";
 
-const Headers = memo(() => {
-  const [isSignUpModalOpen, setIsSignUpModalOpen] = useState(false);
-  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
-
+const Headers = () => {
+  useEffect(() => {
+    const fetchData = async () => {
+      await fetch("http://localhost:3000/api/v1/current_user", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((res) => res.json())
+        .then((data) => console.log(data));
+    };
+    //fetchData();
+  }, []);
   return (
-    <>
-      <header className="flex justify-between items-center max-w-full w-[900px] m-auto">
-        <h1>
-          <Link href="/">認証テスト</Link>
-        </h1>
-        <nav>
-          <ul className="flex items-center">
-            <li>
-              <button
-                onClick={() => setIsSignUpModalOpen(true)}
-                className={`p-4 hover:bg-white transition-all ${
-                  isSignUpModalOpen ? "bg-white" : ""
-                }`}
-              >
-                新規登録
-              </button>
-            </li>
-            <li>
-              <button
-                onClick={() => setIsLoginModalOpen(true)}
-                className={`p-4 hover:bg-white transition-all ${
-                  isLoginModalOpen ? "bg-white" : ""
-                }`}
-              >
-                ログイン
-              </button>
-            </li>
-            <li>
-              <Link href="/tasks" className="p-4 hover:bg-white transition-all">
-                Tasks
-              </Link>
-            </li>
-          </ul>
-        </nav>
-      </header>
-      {isSignUpModalOpen && (
-        <SignUpModal setIsSignUpModalOpen={setIsSignUpModalOpen} />
-      )}
-      {isLoginModalOpen && (
-        <LoginModal setIsLoginModalOpen={setIsLoginModalOpen} />
-      )}
-    </>
+    <header className="flex justify-between items-center max-w-full w-[900px] m-auto h-16">
+      <h1>
+        <Link href="/">認証テスト</Link>
+      </h1>
+      <nav>
+        <ul className="flex items-center">
+          <li>
+            <Link href="/signup" className="p-4 hover:bg-white transition-all">
+              新規登録
+            </Link>
+          </li>
+          <li>
+            <Link href="/login" className="p-4 hover:bg-white transition-all">
+              ログイン
+            </Link>
+          </li>
+        </ul>
+      </nav>
+    </header>
   );
-});
+};
 
 Headers.displayName = "Headers";
 export default Headers;

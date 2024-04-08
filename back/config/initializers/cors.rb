@@ -7,7 +7,7 @@
 
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
-    origins 'localhost:8000','synopsis-jade.vercel.app'
+    origins 'localhost:8000','synopsis-jade.vercel.app','*.ngrok-free.app'
 
     resource "*",
       headers: :any,

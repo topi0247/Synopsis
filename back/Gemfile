@@ -54,11 +54,11 @@ gem 'devise_token_auth', '>= 1.2.0', git: "https://github.com/lynndylanhurley/de
 # 多言語用
 gem 'devise-i18n'
 # OAuth2.0用
-gem 'omniauth-oauth2'
-# GoogleのOAuth2.0用
+gem 'omniauth'
 gem 'omniauth-google-oauth2'
+gem 'omniauth-discord'
 # CSRF対策用
-gem "omniauth-rails_csrf_protection"
+# gem "omniauth-rails_csrf_protection"
 # フロントとバックを分けているので同じサイト判定させるためのgem
 gem 'rails_same_site_cookie'
 # 設定
