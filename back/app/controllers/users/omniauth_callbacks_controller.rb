@@ -1,5 +1,4 @@
 class Users::OmniauthCallbacksController < DeviseTokenAuth::OmniauthCallbacksController
-  include DeviseTokenAuth::Concerns::SetUserByToken
 
   # オーバーライド
   def redirect_callbacks

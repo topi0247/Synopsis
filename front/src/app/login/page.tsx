@@ -5,6 +5,8 @@ import { useState } from "react";
 import { H2 } from "../components/ui/h2";
 import { useRouter } from "next/navigation";
 import { setSession } from "@/session";
+import { ErrorMessage } from "../components/ui/errorMsg";
+import Link from "next/link";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -26,7 +28,6 @@ export default function Login() {
       }),
     })
       .then((res) => {
-        console.log(res.headers.get("Access-Token"));
         if (res.ok) {
           setSession("access-token", res.headers.get("Access-Token") ?? "");
           setSession("client", res.headers.get("Client") ?? "");
@@ -64,13 +65,7 @@ export default function Login() {
               className="flex flex-col gap-4 w-full"
               onSubmit={(e) => handleOnSubmit(e)}
             >
-              {error.length > 0 && (
-                <p className="bg-red-400 bg-opacity-40 p-3 rounded border border-red-600 text-center text-gray-700 my-2">
-                  {error.map((e) => {
-                    return e;
-                  })}
-                </p>
-              )}
+              <ErrorMessage error={error} />
               <TextField
                 label="メールアドレス"
                 variant="outlined"
@@ -95,20 +90,28 @@ export default function Login() {
                 ログイン
               </Button>
             </form>
+            <div className="text-center">
+              <Link
+                href="/signup"
+                className="text-center text-sm text-blue-500 underline hover:opacity-50 transition-all"
+              >
+                新規登録はこちら
+              </Link>
+            </div>
             <hr className="or" />
             <div className="flex gap-4">
-              <button
+              <Button
+                variant="outlined"
                 onClick={() => handleLoginWIthGoogle()}
-                className="bg-green-100 px-4 py-2 rounded hover:bg-green-400 transition-all"
               >
-                Login with Google
-              </button>
-              <button
+                Googleで新規登録
+              </Button>
+              <Button
+                variant="outlined"
                 onClick={() => handleLoginWIthDiscord()}
-                className="bg-green-100 px-4 py-2 rounded hover:bg-green-400 transition-all"
               >
-                Login with Discord
-              </button>
+                Discordで新規登録
+              </Button>
             </div>
           </div>
         </section>
