@@ -27,6 +27,15 @@ ja:
         updated_at: 更新日
     models:
       user: ユーザー
+    errors:
+      models:
+        user:
+          attributes:
+            email:
+              taken: は既に登録されています。
+            password:
+              too_short: は%{count}文字以上で入力してください。
+              too_long: は%{count}文字以下で入力してください。
   devise:
     confirmations:
       confirmed: メールアドレスが確認できました。

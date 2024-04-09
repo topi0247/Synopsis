@@ -1,6 +1,13 @@
-class Auth {
+import { setSession } from "@/session";
+
+interface SignUpResponse {
+  success: boolean;
+  href: string | null;
+  errors: string[] | null;
+}
+
+export class Auth {
   private API_URL = process.env.NEXT_PUBLIC_API_URL;
-  private API_VERSION = process.env.NEXT_PUBLIC_API_VERSION;
 
   // 新規登録
   async signUp(
@@ -8,26 +15,35 @@ class Auth {
     email: string,
     password: string,
     password_confirmation: string
-  ) {
-    const response = await fetch(`${this.API_URL}/auth`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        registration: {
+  ): Promise<SignUpResponse> {
+    try {
+      const res = await fetch(`${this.API_URL}/auth`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
           name: userName,
           email,
           password,
           password_confirmation,
-        },
-      }),
-    });
-    const result = await response.json();
-    if (result.status === "success") {
-      return true;
-    } else {
-      return false;
+        }),
+      });
+
+      const data = await res.json();
+      if (data.status === "success") {
+        // 成功時の処理
+        setSession("access-token", res.headers.get("Access-Token") ?? "");
+        setSession("client", res.headers.get("Client") ?? "");
+        setSession("uid", res.headers.get("Uid") ?? "");
+        setSession("expiry", res.headers.get("Expiry") ?? "");
+        return { success: true, href: "/tasks", errors: null };
+      }
+
+      // サーバー側での処理失敗
+      return { success: false, href: null, errors: data.errors.full_messages };
+    } catch (e: any) {
+      return { success: false, href: null, errors: [e.message] };
     }
   }
 

@@ -24,7 +24,7 @@ class Users::RegistrationsController < DeviseTokenAuth::RegistrationsController
         end
       else
         # ユーザーの保存に失敗した場合
-        render json: { status: 'error', message: resource.errors.full_messages.join(', ') } and return
+        render json: { status: 'error', message: resource.errors.full_messages } and return
       end
     end
   end

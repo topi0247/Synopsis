@@ -5,51 +5,32 @@ import { H2 } from "../components/ui/h2";
 import { useState } from "react";
 import { ErrorMessage } from "../components/ui/errorMsg";
 import { useRouter } from "next/navigation";
-import { set } from "react-hook-form";
-import { setSession } from "@/session";
 import Link from "next/link";
+import { Auth } from "@/api/auth";
 
 export default function SignUp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
-  const [error, setError] = useState([]);
+  const [error, setError] = useState([] as string[]);
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const router = useRouter();
 
   const handleOnSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    await fetch(`${API_URL}/auth`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email,
-        password,
-        name,
-        password_confirmation: passwordConfirmation,
-      }),
-    })
+    const auth = new Auth();
+    await auth
+      .signUp(name, email, password, passwordConfirmation)
       .then((res) => {
-        if (res.ok) {
-          setSession("access-token", res.headers.get("Access-Token") ?? "");
-          setSession("client", res.headers.get("Client") ?? "");
-          setSession("uid", res.headers.get("Uid") ?? "");
-          setSession("expiry", res.headers.get("Expiry") ?? "");
+        if (res.success) {
+          router.push(res?.href ?? "");
+          return;
         }
-        return res.json();
-      })
-      .then((data) => {
-        if (data.success) {
-          router.push("/login");
-        } else {
-          setError(data.errors);
-        }
+        setError(res?.errors ?? ([] as string[]));
       })
       .catch((error) => {
-        setError(error.message);
+        setError(error.errors as string[]);
       });
   };
 
