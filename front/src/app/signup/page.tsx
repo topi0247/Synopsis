@@ -1,27 +1,32 @@
 "use client";
 
-import { Button, TextField } from "@mui/material";
+import { Button } from "@mui/material";
 import { H2 } from "../components/ui/h2";
 import { useState } from "react";
 import { ErrorMessage } from "../components/ui/errorMsg";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Auth } from "@/api/auth";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { InputText } from "../components/forms/inputText";
+
+interface IFormInputs {
+  name: string;
+  email: string;
+  password: string;
+  passwordConfirmation: string;
+}
 
 export default function SignUp() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
-  const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [error, setError] = useState([] as string[]);
-  const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const router = useRouter();
 
-  const handleOnSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const { handleSubmit, control, getValues } = useForm<IFormInputs>();
+
+  const onSubmit: SubmitHandler<IFormInputs> = (data) => {
     const auth = new Auth();
-    await auth
-      .signUp(name, email, password, passwordConfirmation)
+    auth
+      .signUp(data.name, data.email, data.password, data.passwordConfirmation)
       .then((res) => {
         if (res.success) {
           router.push(res?.href ?? "");
@@ -52,40 +57,61 @@ export default function SignUp() {
           <div className="flex flex-col gap-2 justify-center items-center my-8 w-full">
             <form
               className="flex flex-col gap-4 w-full"
-              onSubmit={(e) => handleOnSubmit(e)}
+              onSubmit={handleSubmit(onSubmit)}
             >
               <ErrorMessage error={error} />
-              <TextField
+              <InputText
+                control={control}
+                name="name"
                 label="名前"
-                variant="outlined"
-                type="text"
+                rules={{
+                  required: { value: true, message: "必須入力" },
+                }}
                 autoComplete="name"
-                required
-                onChange={(e) => setName(e.target.value)}
               />
-              <TextField
+              <InputText
+                control={control}
+                name="email"
                 label="メールアドレス"
-                variant="outlined"
-                type="email"
+                rules={{
+                  required: { value: true, message: "入力必須" },
+                  pattern: {
+                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+                    message: "メールアドレスの形式で入力してください",
+                  },
+                }}
                 autoComplete="email"
-                required
-                onChange={(e) => setEmail(e.target.value)}
               />
-              <TextField
+              <InputText
+                control={control}
+                name="password"
                 label="パスワード"
-                variant="outlined"
                 type="password"
+                rules={{
+                  required: { value: true, message: "入力必須" },
+                  minLength: {
+                    value: 6,
+                    message: "6文字以上で入力してください",
+                  },
+                }}
                 autoComplete="new-password"
-                required
-                onChange={(e) => setPassword(e.target.value)}
               />
-              <TextField
+              <InputText
+                control={control}
+                name="passwordConfirmation"
                 label="パスワード（確認）"
-                variant="outlined"
                 type="password"
+                rules={{
+                  required: { value: true, message: "入力必須" },
+                  validate: (value: string) =>
+                    value === getValues("password") ||
+                    "パスワードが一致しません",
+                  minLength: {
+                    value: 6,
+                    message: "6文字以上で入力してください",
+                  },
+                }}
                 autoComplete="new-password"
-                required
-                onChange={(e) => setPasswordConfirmation(e.target.value)}
               />
               <Button variant="outlined" type="submit">
                 新規登録

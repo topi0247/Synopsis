@@ -13,9 +13,6 @@ class Users::OmniauthCallbacksController < DeviseTokenAuth::OmniauthCallbacksCon
     end
   end
 
-  protected
-
-
   private
 
   def response_headers(user)

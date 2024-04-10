@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import "./globals.css";
-import Headers from "./components/headers";
+import "@/styles/globals.css";
+import Headers from "./components/layouts/headers";
 
 export const metadata: Metadata = {
   title: "認証テスト",

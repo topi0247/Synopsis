@@ -1,6 +1,6 @@
 import { setSession } from "@/session";
 
-interface SignUpResponse {
+interface ILoginResponse {
   success: boolean;
   href: string | null;
   errors: string[] | null;
@@ -15,7 +15,7 @@ export class Auth {
     email: string,
     password: string,
     password_confirmation: string
-  ): Promise<SignUpResponse> {
+  ): Promise<ILoginResponse> {
     try {
       const res = await fetch(`${this.API_URL}/auth`, {
         method: "POST",
@@ -31,58 +31,88 @@ export class Auth {
       });
 
       const data = await res.json();
-      if (data.status === "success") {
-        // 成功時の処理
-        setSession("access-token", res.headers.get("Access-Token") ?? "");
-        setSession("client", res.headers.get("Client") ?? "");
-        setSession("uid", res.headers.get("Uid") ?? "");
-        setSession("expiry", res.headers.get("Expiry") ?? "");
-        return { success: true, href: "/tasks", errors: null };
+      if (data.status !== "success") {
+        // サーバー側での処理失敗
+        return {
+          success: false,
+          href: null,
+          errors: data.errors.full_messages,
+        };
       }
 
-      // サーバー側での処理失敗
-      return { success: false, href: null, errors: data.errors.full_messages };
+      // 成功時の処理
+      setSession("access-token", res.headers.get("Access-Token") ?? "");
+      setSession("client", res.headers.get("Client") ?? "");
+      setSession("uid", res.headers.get("Uid") ?? "");
+      setSession("expiry", res.headers.get("Expiry") ?? "");
+      return { success: true, href: "/tasks", errors: null };
     } catch (e: any) {
       return { success: false, href: null, errors: [e.message] };
     }
   }
 
   // メアド・パスワードログイン
-  async login(email: string, password: string) {
-    const response = await fetch(`${this.API_URL}/auth/sign_in`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email,
-        password,
-      }),
-    });
-    const result = await response.json();
-    if (result.status === "success") {
-      return true;
-    } else {
-      return false;
+  async login(email: string, password: string): Promise<ILoginResponse> {
+    try {
+      const res = await fetch(`${this.API_URL}/auth/sign_in`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      });
+
+      const data = await res.json();
+      if (data.status !== "success") {
+        // サーバー側での処理失敗
+        return { success: false, href: null, errors: data.errors };
+      }
+
+      setSession("access-token", res.headers.get("Access-Token") ?? "");
+      setSession("client", res.headers.get("Client") ?? "");
+      setSession("uid", res.headers.get("Uid") ?? "");
+      setSession("expiry", res.headers.get("Expiry") ?? "");
+      return { success: true, href: "/tasks", errors: null };
+    } catch (e: any) {
+      return { success: false, href: null, errors: [e.message] };
     }
   }
 
-  // パスワード再設定
-  async passwordReset(email: string) {
-    const response = await fetch(`${this.API_URL}/auth/password`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email,
-      }),
-    });
-    const result = await response.json();
-    if (result.status === "success") {
-      return true;
-    } else {
-      return false;
+  // Googleでログイン
+  async loginWithGoogle(): Promise<void> {
+    window.location
+      .href = `${this.API_URL}/auth/google_oauth2`;
+  }
+
+  // Discordでログイン
+  async loginWithDiscord(): Promise<void> {
+    window.location
+      .href = `${this.API_URL}/auth/discord`;
+  }
+
+  // 現在ユーザーの取得
+  async currentUser(): Promise<void> {
+    try {
+      const res = await fetch(`${this.API_URL}/auth/validate_token`, {
+        method: "GET",
+        headers: {
+          "access-token": sessionStorage.getItem("access-token") ?? "",
+          client: sessionStorage.getItem("client") ?? "",
+          uid: sessionStorage.getItem("uid") ?? "",
+        },
+      });
+
+      const data = await res.json();
+      if (data.status !== "success") {
+        // サーバー側での処理失敗
+        return;
+      }
+      return;
+    } catch (e: any) {
+      return;
     }
   }
 }
