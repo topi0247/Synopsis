@@ -114,8 +114,7 @@ export const useAuth = () => {
       setUser({ id: data.user.id, name: data.user.name });
       return true;
     } catch (e: any) {
-      console.error(e.message);
-      return true;
+      return false;
     }
   }
 

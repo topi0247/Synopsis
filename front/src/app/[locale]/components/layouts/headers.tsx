@@ -2,13 +2,15 @@
 
 import { useAuth } from "@/api/auth";
 import { userState } from "@/state/user";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useEffect } from "react";
 import { useRecoilValue } from "recoil";
 
-const Headers = () => {
+export default function Headers() {
   const { currentUser } = useAuth();
   const user = useRecoilValue(userState);
+  const t = useTranslations("Main");
 
   useEffect(() => {
     currentUser();
@@ -17,7 +19,7 @@ const Headers = () => {
   return (
     <header className="flex justify-between items-center max-w-full w-[900px] m-auto h-16">
       <h1>
-        <Link href="/">認証テスト</Link>
+        <Link href="/">{t("title")}</Link>
       </h1>
       <nav>
         <ul className="flex items-center">
@@ -45,7 +47,4 @@ const Headers = () => {
       </nav>
     </header>
   );
-};
-
-Headers.displayName = "Headers";
-export default Headers;
+}

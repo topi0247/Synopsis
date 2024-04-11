@@ -1,9 +1,11 @@
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 
 export default function Home() {
+  const t = useTranslations("Main");
   return (
     <article className="w-full flex flex-col justify-center items-center gap-8">
-      <h2>認証テスト</h2>
+      <h2>{t("title")}</h2>
       <section className="flex gap-8">
         <Link
           href="/signup"
