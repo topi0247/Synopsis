@@ -13,7 +13,7 @@ export default function RootLayout({
     <html lang={locale}>
       <body className="w-full">
         <AppProvider locale={locale}>
-          <MainLayout lang={locale}>{children}</MainLayout>
+          <MainLayout>{children}</MainLayout>
         </AppProvider>
       </body>
     </html>
