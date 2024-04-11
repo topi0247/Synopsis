@@ -105,8 +105,7 @@ export const useAuth = () => {
     const client = getSession("client");
     const uid = getSession("uid");
     const expiry = getSession("expiry");
-    const authorization = getSession("authorization");
-    if (!accessToken || !client || !uid || !expiry || !authorization) {
+    if (!accessToken || !client || !uid || !expiry) {
       return false;
     }
     try {
@@ -118,7 +117,6 @@ export const useAuth = () => {
           client: client,
           uid: uid,
           expiry: expiry,
-          authorization: authorization,
         },
       });
       console.log(res);
@@ -126,8 +124,8 @@ export const useAuth = () => {
       if (!res.ok) {
         throw new Error("認証エラー");
       }
-      const json = await res.json();
-      setUser({ id: json.data.id, name: json.data.name });
+      const data = await res.json();
+      setUser({ id: data.user.id, name: data.user.name });
       return true;
     } catch (e: any) {
       console.error(e.message);

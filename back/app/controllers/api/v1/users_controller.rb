@@ -1,19 +1,16 @@
 class Api::V1::UsersController < Api::V1::BasesController
   def current_user
-    set_user_by_token(User)
-    Rails.logger.info "@resource: #{@resource}"
-    render json: { status: false }
+    set_user_by_token
+    if @resource
+      render json: { success: true, user: {id: @resource.id, name: @resource.name} }
+    else
+      render json: { success: false, message: 'User not found' }
+    end
   end
 
-  def set_user_by_token(mapping = nil)
-    binding.pry
-    # determine target authentication class
+  def set_user_by_token
     rc = User
 
-    # no default user defined
-    return unless rc
-
-    # gets the headers names, which was set in the initialize file
     uid_name = DeviseTokenAuth.headers_names[:'uid']
     other_uid_name = DeviseTokenAuth.other_uid && DeviseTokenAuth.headers_names[DeviseTokenAuth.other_uid.to_sym]
     access_token_name = DeviseTokenAuth.headers_names[:'access-token']
