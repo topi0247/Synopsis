@@ -1,6 +1,7 @@
 class Users::OmniauthCallbacksController < DeviseTokenAuth::OmniauthCallbacksController
 
   # オーバーライド
+  # 後でよく確認する
   def redirect_callbacks
     user = User.from_omniauth(request.env['omniauth.auth'])
 
@@ -17,9 +18,9 @@ class Users::OmniauthCallbacksController < DeviseTokenAuth::OmniauthCallbacksCon
 
   def response_headers(user)
     token = user.create_token
-    response.headers['uid'] = user.uid
+    response.headers[:uid] = user.uid
     response.headers['access-token'] = token.token
-    response.headers['client'] = token.client
-    response.headers['expiry'] = token.expiry
+    response.headers[:client] = token.client
+    response.headers[:expiry] = token.expiry
   end
 end

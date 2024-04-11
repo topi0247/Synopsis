@@ -1,7 +1,8 @@
-import { getSession, setSession } from "@/session";
+import { setSession } from "@/session";
 import { userState } from "@/state/user";
 import { ILoginResponse } from "@/types";
 import { useSetRecoilState } from "recoil";
+import { authClient, baseClient } from "./base";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 export const useAuth = () => {
@@ -15,35 +16,32 @@ export const useAuth = () => {
     password_confirmation: string
   ): Promise<ILoginResponse> {
     try {
-      const res = await fetch(`${API_URL}/auth`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: userName,
-          email,
-          password,
-          password_confirmation,
-        }),
+      const res = await baseClient.post("/auth", {
+        name: userName,
+        email,
+        password,
+        password_confirmation,
       });
 
-      const data = await res.json();
-      if (data.status !== "success") {
+      if (res.status !== 200) {
+        throw new Error("認証エラー");
+      }
+
+      const data = res.data;
+      if (!data.success) {
         // サーバー側での処理失敗
         return {
           success: false,
           href: null,
-          errors: data.errors.full_messages,
+          errors: data.message,
         };
       }
 
-      // 成功時の処理
-      setSession("access-token", res.headers.get("Access-Token") ?? "");
-      setSession("client", res.headers.get("Client") ?? "");
-      setSession("uid", res.headers.get("Uid") ?? "");
-      setSession("expiry", res.headers.get("Expiry") ?? "");
-      setSession("authorization", res.headers.get("Authorization") ?? "");
+      // // 成功時の処理
+      setSession("access-token", res.headers["access-token"] ?? "");
+      setSession("client", res.headers["client"] ?? "");
+      setSession("uid", res.headers["uid"] ?? "");
+      setSession("expiry", res.headers["expiry"] ?? "");
       setUser({ id: data.data.id, name: data.data.name });
       return { success: true, href: "/tasks", errors: null };
     } catch (e: any) {
@@ -57,31 +55,30 @@ export const useAuth = () => {
     password: string
   ): Promise<ILoginResponse> {
     try {
-      const res = await fetch(`${API_URL}/auth/sign_in`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
+      const res = await baseClient.post("/auth/sign_in", {
+        email,
+        password,
       });
 
-      if (!res.ok) {
+      if (res.status !== 200) {
         throw new Error("認証エラー");
       }
 
-      const data = await res.json();
-      if (data.success !== true) {
+      const data = res.data;
+      if (!data.success) {
         // サーバー側での処理失敗
-        return { success: false, href: null, errors: data.errors };
+        return {
+          success: false,
+          href: null,
+          errors: data.message,
+        };
       }
 
-      setSession("access-token", res.headers.get("Access-Token") ?? "");
-      setSession("client", res.headers.get("Client") ?? "");
-      setSession("uid", res.headers.get("Uid") ?? "");
-      setSession("expiry", res.headers.get("Expiry") ?? "");
+      // // 成功時の処理
+      setSession("access-token", res.headers["access-token"] ?? "");
+      setSession("client", res.headers["client"] ?? "");
+      setSession("uid", res.headers["uid"] ?? "");
+      setSession("expiry", res.headers["expiry"] ?? "");
       setUser({ id: data.user.id, name: data.user.name });
       return { success: true, href: "/tasks", errors: null };
     } catch (e: any) {
@@ -101,30 +98,19 @@ export const useAuth = () => {
 
   // 現在ユーザーの取得
   async function currentUser(): Promise<boolean> {
-    const accessToken = getSession("access-token");
-    const client = getSession("client");
-    const uid = getSession("uid");
-    const expiry = getSession("expiry");
-    if (!accessToken || !client || !uid || !expiry) {
-      return false;
-    }
     try {
-      const res = await fetch(`${API_URL}/api/v1/me`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "access-token": accessToken,
-          client: client,
-          uid: uid,
-          expiry: expiry,
-        },
-      });
-      console.log(res);
+      const res = await authClient.get("/me");
 
-      if (!res.ok) {
+      if (res.status !== 200) {
         throw new Error("認証エラー");
       }
-      const data = await res.json();
+
+      const data = res.data;
+      if (!data.success) {
+        // サーバー側での処理失敗
+        return false;
+      }
+
       setUser({ id: data.user.id, name: data.user.name });
       return true;
     } catch (e: any) {

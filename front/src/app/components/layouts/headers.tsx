@@ -33,7 +33,10 @@ const Headers = () => {
           </li>
           {user.id && (
             <li>
-              <Link href="/user" className="p-4 hover:bg-white transition-all">
+              <Link
+                href="/account"
+                className="p-4 hover:bg-white transition-all"
+              >
                 {user.name}
               </Link>
             </li>

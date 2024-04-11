@@ -35,7 +35,6 @@ export const InputText = (
           error={!!error}
           helperText={error ? error.message : null}
           fullWidth
-          defaultValue=""
         />
       )}
     />
