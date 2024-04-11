@@ -1,23 +1,21 @@
-import { setSession } from "@/session";
+import { getSession, setSession } from "@/session";
+import { userState } from "@/state/user";
+import { ILoginResponse } from "@/types";
+import { useSetRecoilState } from "recoil";
 
-interface ILoginResponse {
-  success: boolean;
-  href: string | null;
-  errors: string[] | null;
-}
-
-export class Auth {
-  private API_URL = process.env.NEXT_PUBLIC_API_URL;
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+export const useAuth = () => {
+  const setUser = useSetRecoilState(userState);
 
   // 新規登録
-  async signUp(
+  async function signUp(
     userName: string,
     email: string,
     password: string,
     password_confirmation: string
   ): Promise<ILoginResponse> {
     try {
-      const res = await fetch(`${this.API_URL}/auth`, {
+      const res = await fetch(`${API_URL}/auth`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -45,6 +43,8 @@ export class Auth {
       setSession("client", res.headers.get("Client") ?? "");
       setSession("uid", res.headers.get("Uid") ?? "");
       setSession("expiry", res.headers.get("Expiry") ?? "");
+      setSession("authorization", res.headers.get("Authorization") ?? "");
+      setUser({ id: data.data.id, name: data.data.name });
       return { success: true, href: "/tasks", errors: null };
     } catch (e: any) {
       return { success: false, href: null, errors: [e.message] };
@@ -52,9 +52,12 @@ export class Auth {
   }
 
   // メアド・パスワードログイン
-  async login(email: string, password: string): Promise<ILoginResponse> {
+  async function login(
+    email: string,
+    password: string
+  ): Promise<ILoginResponse> {
     try {
-      const res = await fetch(`${this.API_URL}/auth/sign_in`, {
+      const res = await fetch(`${API_URL}/auth/sign_in`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -65,8 +68,12 @@ export class Auth {
         }),
       });
 
+      if (!res.ok) {
+        throw new Error("認証エラー");
+      }
+
       const data = await res.json();
-      if (data.status !== "success") {
+      if (data.success !== true) {
         // サーバー側での処理失敗
         return { success: false, href: null, errors: data.errors };
       }
@@ -75,6 +82,7 @@ export class Auth {
       setSession("client", res.headers.get("Client") ?? "");
       setSession("uid", res.headers.get("Uid") ?? "");
       setSession("expiry", res.headers.get("Expiry") ?? "");
+      setUser({ id: data.user.id, name: data.user.name });
       return { success: true, href: "/tasks", errors: null };
     } catch (e: any) {
       return { success: false, href: null, errors: [e.message] };
@@ -82,37 +90,56 @@ export class Auth {
   }
 
   // Googleでログイン
-  async loginWithGoogle(): Promise<void> {
-    window.location
-      .href = `${this.API_URL}/auth/google_oauth2`;
+  async function loginWithGoogle(): Promise<void> {
+    window.location.href = `${API_URL}/auth/google_oauth2`;
   }
 
   // Discordでログイン
-  async loginWithDiscord(): Promise<void> {
-    window.location
-      .href = `${this.API_URL}/auth/discord`;
+  async function loginWithDiscord(): Promise<void> {
+    window.location.href = `${API_URL}/auth/discord`;
   }
 
   // 現在ユーザーの取得
-  async currentUser(): Promise<void> {
+  async function currentUser(): Promise<boolean> {
+    const accessToken = getSession("access-token");
+    const client = getSession("client");
+    const uid = getSession("uid");
+    const expiry = getSession("expiry");
+    const authorization = getSession("authorization");
+    if (!accessToken || !client || !uid || !expiry || !authorization) {
+      return false;
+    }
     try {
-      const res = await fetch(`${this.API_URL}/auth/validate_token`, {
+      const res = await fetch(`${API_URL}/api/v1/me`, {
         method: "GET",
         headers: {
-          "access-token": sessionStorage.getItem("access-token") ?? "",
-          client: sessionStorage.getItem("client") ?? "",
-          uid: sessionStorage.getItem("uid") ?? "",
+          "Content-Type": "application/json",
+          "access-token": accessToken,
+          client: client,
+          uid: uid,
+          expiry: expiry,
+          authorization: authorization,
         },
       });
+      console.log(res);
 
-      const data = await res.json();
-      if (data.status !== "success") {
-        // サーバー側での処理失敗
-        return;
+      if (!res.ok) {
+        throw new Error("認証エラー");
       }
-      return;
+      const json = await res.json();
+      setUser({ id: json.data.id, name: json.data.name });
+      return true;
     } catch (e: any) {
-      return;
+      console.error(e.message);
+      return true;
     }
   }
-}
+
+  return {
+    signUp,
+    login,
+    loginWithGoogle,
+    loginWithDiscord,
+    currentUser,
+  };
+};

@@ -6,7 +6,7 @@ import { useState } from "react";
 import { ErrorMessage } from "../components/ui/errorMsg";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Auth } from "@/api/auth";
+import { useAuth } from "@/api/auth";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { InputText } from "../components/forms/inputText";
 
@@ -18,35 +18,24 @@ interface IFormInputs {
 }
 
 export default function SignUp() {
+  const { signUp, loginWithGoogle, loginWithDiscord } = useAuth();
   const [error, setError] = useState([] as string[]);
   const router = useRouter();
 
   const { handleSubmit, control, getValues } = useForm<IFormInputs>();
 
-  const onSubmit: SubmitHandler<IFormInputs> = (data) => {
-    const auth = new Auth();
-    auth
-      .signUp(data.name, data.email, data.password, data.passwordConfirmation)
-      .then((res) => {
-        if (res.success) {
-          router.push(res?.href ?? "");
-          return;
-        }
-        setError(res?.errors ?? ([] as string[]));
-      })
-      .catch((error) => {
-        setError(error.errors as string[]);
-      });
-  };
-
-  const handleLoginWIthGoogle = async () => {
-    const API_URL = process.env.NEXT_PUBLIC_API_URL;
-    window.location.href = `${API_URL}/auth/google_oauth2`;
-  };
-
-  const handleLoginWIthDiscord = async () => {
-    const API_URL = process.env.NEXT_PUBLIC_API_URL;
-    window.location.href = `${API_URL}/auth/discord`;
+  const onSubmit: SubmitHandler<IFormInputs> = async (data) => {
+    const res = await signUp(
+      data.name,
+      data.email,
+      data.password,
+      data.passwordConfirmation
+    );
+    if (res.success) {
+      router.push(res.href ?? "/");
+    } else {
+      setError(res.errors ?? []);
+    }
   };
 
   return (
@@ -127,16 +116,10 @@ export default function SignUp() {
             </div>
             <hr className="or" />
             <div className="flex gap-4">
-              <Button
-                variant="outlined"
-                onClick={() => handleLoginWIthGoogle()}
-              >
+              <Button variant="outlined" onClick={() => loginWithGoogle}>
                 Googleで新規登録
               </Button>
-              <Button
-                variant="outlined"
-                onClick={() => handleLoginWIthDiscord()}
-              >
+              <Button variant="outlined" onClick={() => loginWithDiscord}>
                 Discordで新規登録
               </Button>
             </div>

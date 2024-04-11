@@ -24,6 +24,7 @@ export const InputText = (
       name={name}
       control={control}
       rules={rules}
+      defaultValue=""
       render={({ field, fieldState: { error } }) => (
         <TextField
           {...field}

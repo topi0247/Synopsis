@@ -1,21 +1,19 @@
 "use client";
+
+import { useAuth } from "@/api/auth";
+import { userState } from "@/state/user";
 import Link from "next/link";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
+import { useRecoilValue } from "recoil";
 
 const Headers = () => {
+  const { currentUser } = useAuth();
+  const user = useRecoilValue(userState);
+
   useEffect(() => {
-    const fetchData = async () => {
-      await fetch("http://localhost:3000/api/v1/current_user", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-        .then((res) => res.json())
-        .then((data) => console.log(data));
-    };
-    //fetchData();
+    currentUser();
   }, []);
+
   return (
     <header className="flex justify-between items-center max-w-full w-[900px] m-auto h-16">
       <h1>
@@ -33,6 +31,13 @@ const Headers = () => {
               ログイン
             </Link>
           </li>
+          {user.id && (
+            <li>
+              <Link href="/user" className="p-4 hover:bg-white transition-all">
+                {user.name}
+              </Link>
+            </li>
+          )}
         </ul>
       </nav>
     </header>
