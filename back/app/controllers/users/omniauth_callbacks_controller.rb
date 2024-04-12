@@ -8,9 +8,9 @@ class Users::OmniauthCallbacksController < DeviseTokenAuth::OmniauthCallbacksCon
     if user.persisted?
       sign_in(:user, user, store: false, bypass: false)
       response_headers(user)
-      redirect_to "#{ENV['FRONT_URL']}/tasks", allow_other_host: true
+      redirect_to "#{ENV['FRONT_URL']}/ja/tasks", allow_other_host: true
     else
-      redirect_to "#{ENV['FRONT_URL']}?status=error", allow_other_host: true
+      redirect_to "#{ENV['FRONT_URL']}/?status=error", allow_other_host: true
     end
   end
 

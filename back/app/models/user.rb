@@ -34,6 +34,7 @@ class User < ApplicationRecord
     email = auth.info.email
 
     # 同じメールアドレスのユーザーがいるか確認、いなかったら作る
+    # TODO : 複数認証をOKにするなら認証用のテーブルを別途設けたほうがいい
     user = User.find_or_create_by(email: email) do |new_user|
       new_user.provider = auth.provider
       new_user.uid = auth.uid

@@ -88,6 +88,7 @@ export const useAuth = () => {
 
   // Googleでログイン
   async function loginWithGoogle(): Promise<void> {
+    console.log("loginWithGoogle");
     window.location.href = `${API_URL}/auth/google_oauth2`;
   }
 

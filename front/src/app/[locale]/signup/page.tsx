@@ -123,10 +123,10 @@ export default function SignUp() {
               </p>
             </div>
             <div className="flex gap-4">
-              <Button variant="outlined" onClick={() => loginWithGoogle}>
+              <Button variant="outlined" onClick={loginWithGoogle}>
                 {t_Auth("signup_with_google")}
               </Button>
-              <Button variant="outlined" onClick={() => loginWithDiscord}>
+              <Button variant="outlined" onClick={loginWithDiscord}>
                 {t_Auth("signup_with_google")}
               </Button>
             </div>
