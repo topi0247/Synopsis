@@ -93,7 +93,7 @@ export default function Login() {
                 {t_Auth("login_with_google")}
               </Button>
               <Button variant="outlined" onClick={loginWithDiscord}>
-                {t_Auth("login_with_google")}
+                {t_Auth("login_with_discord")}
               </Button>
             </div>
           </div>

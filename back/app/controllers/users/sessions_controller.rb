@@ -4,10 +4,6 @@ class Users::SessionsController < DeviseTokenAuth::SessionsController
   # sessionなどの不要なパラメータが入ってしまうのでラップを無効化
   wrap_parameters false
 
-  def create
-    super
-  end
-
   protected
 
   # ログイン成功時の処理オーバーライド
@@ -16,5 +12,9 @@ class Users::SessionsController < DeviseTokenAuth::SessionsController
       success: true,
       user: { name: @resource.name, id: @resource.id },
     }
+  end
+
+  def resource_name
+    :user
   end
 end

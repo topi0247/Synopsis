@@ -7,20 +7,20 @@ class Users::OmniauthCallbacksController < DeviseTokenAuth::OmniauthCallbacksCon
 
     if user.persisted?
       sign_in(:user, user, store: false, bypass: false)
-      response_headers(user)
-      redirect_to "#{ENV['FRONT_URL']}/ja/tasks", allow_other_host: true
+      token = user.create_token
+      user.tokens[token.client] = {
+        token: token.token,
+        token_hash: token.token_hash,
+        expiry: token.expiry
+      }
+      if user.save
+        redirect_to "#{ENV['FRONT_URL']}/ja/tasks?uid=#{user.uid}&token=#{token.token}&client=#{token.client}&expiry=#{token.expiry}", allow_other_host: true
+      else
+        Rails.logger.error("Failed to save user: #{user.errors.full_messages.join(", ")}")
+        redirect_to "#{ENV['FRONT_URL']}/?status=error", allow_other_host: true
+      end
     else
       redirect_to "#{ENV['FRONT_URL']}/?status=error", allow_other_host: true
     end
-  end
-
-  private
-
-  def response_headers(user)
-    token = user.create_token
-    response.headers[:uid] = user.uid
-    response.headers['access-token'] = token.token
-    response.headers[:client] = token.client
-    response.headers[:expiry] = token.expiry
   end
 end

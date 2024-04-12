@@ -1,4 +1,4 @@
-import { getSession } from "@/session";
+import { getLocalStorage } from "@/localStorage";
 import axios from "axios";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -18,9 +18,9 @@ export const authClient = axios.create({
 });
 
 authClient.interceptors.request.use((config) => {
-  config.headers["access-token"] = getSession("access-token");
-  config.headers.client = getSession("client");
-  config.headers.uid = getSession("uid");
-  config.headers.expiry = getSession("expiry");
+  config.headers["access-token"] = getLocalStorage("access-token");
+  config.headers.client = getLocalStorage("client");
+  config.headers.uid = getLocalStorage("uid");
+  config.headers.expiry = getLocalStorage("expiry");
   return config;
 });

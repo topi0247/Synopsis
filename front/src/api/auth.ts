@@ -1,4 +1,8 @@
-import { setSession } from "@/session";
+import {
+  clearLocalStorage,
+  getLocalStorage,
+  setLocalStorage,
+} from "@/localStorage";
 import { userState } from "@/state/user";
 import { ILoginResponse } from "@/types";
 import { useSetRecoilState } from "recoil";
@@ -38,10 +42,10 @@ export const useAuth = () => {
       }
 
       // // 成功時の処理
-      setSession("access-token", res.headers["access-token"] ?? "");
-      setSession("client", res.headers["client"] ?? "");
-      setSession("uid", res.headers["uid"] ?? "");
-      setSession("expiry", res.headers["expiry"] ?? "");
+      setLocalStorage("access-token", res.headers["access-token"] ?? "");
+      setLocalStorage("client", res.headers["client"] ?? "");
+      setLocalStorage("uid", res.headers["uid"] ?? "");
+      setLocalStorage("expiry", res.headers["expiry"] ?? "");
       setUser({ id: data.data.id, name: data.data.name });
       return { success: true, href: "/tasks", errors: null };
     } catch (e: any) {
@@ -75,10 +79,10 @@ export const useAuth = () => {
       }
 
       // // 成功時の処理
-      setSession("access-token", res.headers["access-token"] ?? "");
-      setSession("client", res.headers["client"] ?? "");
-      setSession("uid", res.headers["uid"] ?? "");
-      setSession("expiry", res.headers["expiry"] ?? "");
+      setLocalStorage("access-token", res.headers["access-token"] ?? "");
+      setLocalStorage("client", res.headers["client"] ?? "");
+      setLocalStorage("uid", res.headers["uid"] ?? "");
+      setLocalStorage("expiry", res.headers["expiry"] ?? "");
       setUser({ id: data.user.id, name: data.user.name });
       return { success: true, href: "/tasks", errors: null };
     } catch (e: any) {
@@ -88,7 +92,6 @@ export const useAuth = () => {
 
   // Googleでログイン
   async function loginWithGoogle(): Promise<void> {
-    console.log("loginWithGoogle");
     window.location.href = `${API_URL}/auth/google_oauth2`;
   }
 
@@ -98,10 +101,25 @@ export const useAuth = () => {
   }
 
   // 現在ユーザーの取得
-  async function currentUser(): Promise<boolean> {
+  async function currentUser({
+    uid = "",
+    client = "",
+    token = "",
+    expiry = "",
+  }: {
+    uid?: string;
+    client?: string;
+    token?: string;
+    expiry?: string;
+  } = {}): Promise<boolean> {
+    if (uid && client && token && expiry) {
+      setLocalStorage("access-token", token);
+      setLocalStorage("client", client);
+      setLocalStorage("uid", uid);
+      setLocalStorage("expiry", expiry);
+    }
     try {
       const res = await authClient.get("/me");
-
       if (res.status !== 200) {
         throw new Error("認証エラー");
       }
@@ -119,11 +137,37 @@ export const useAuth = () => {
     }
   }
 
+  // ログアウト
+  async function logout(): Promise<boolean> {
+    try {
+      const res = await baseClient.delete("/auth/sign_out", {
+        headers: {
+          "access-token": getLocalStorage("access-token"),
+          client: getLocalStorage("client"),
+          uid: getLocalStorage("uid"),
+          expiry: getLocalStorage("expiry"),
+        },
+      });
+      if (res.status !== 200) {
+        throw new Error("認証エラー");
+      }
+
+      clearLocalStorage();
+
+      setUser({ id: null, name: "" });
+      return true;
+    } catch (e: any) {
+      console.error(e);
+      return false;
+    }
+  }
+
   return {
     signUp,
     login,
     loginWithGoogle,
     loginWithDiscord,
     currentUser,
+    logout,
   };
 };

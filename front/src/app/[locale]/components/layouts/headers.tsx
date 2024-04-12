@@ -10,7 +10,7 @@ import { useEffect } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 
 export default function Headers() {
-  const { currentUser } = useAuth();
+  const { currentUser, logout } = useAuth();
   const user = useRecoilValue(userState);
   const [locale, setLocale] = useRecoilState(localeState);
   const t_Main = useTranslations("Main");
@@ -19,12 +19,28 @@ export default function Headers() {
   const pathName = usePathname();
 
   useEffect(() => {
-    currentUser();
+    if (user.id) return;
+    const queryParams = new URLSearchParams(window.location.search);
+    const uid = queryParams.get("uid");
+    const client = queryParams.get("client");
+    const token = queryParams.get("token");
+    const expiry = queryParams.get("expiry");
+    if (uid && client && token && expiry) {
+      currentUser({ uid, client, token, expiry });
+      router.push(pathName);
+    } else {
+      currentUser();
+    }
   }, []);
 
   const handleSelectLocale = (e: SelectChangeEvent<string>) => {
     setLocale(e.target.value);
     router.push(pathName, { locale: e.target.value });
+  };
+
+  const handleLogout = async () => {
+    await logout();
+    router.push("/");
   };
 
   return (
@@ -46,7 +62,10 @@ export default function Headers() {
               </li>
 
               <li>
-                <button className="p-4 hover:bg-white transition-all">
+                <button
+                  className="p-4 hover:bg-white transition-all"
+                  onClick={handleLogout}
+                >
                   {t_Auth("logout")}
                 </button>
               </li>

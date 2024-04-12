@@ -1,23 +1,23 @@
-export const setSession = (key: string, value: string) => {
+export const setLocalStorage = (key: string, value: string) => {
   if (typeof window !== "undefined" && value) {
     localStorage.setItem(key, value);
   }
 };
 
-export const getSession = (key: string) => {
+export const getLocalStorage = (key: string) => {
   if (typeof window !== "undefined") {
     return localStorage.getItem(key);
   }
   return null;
 };
 
-export const removeSession = (key: string) => {
+export const removeLocalStorage = (key: string) => {
   if (typeof window !== "undefined") {
     localStorage.removeItem(key);
   }
 };
 
-export const clearSession = () => {
+export const clearLocalStorage = () => {
   if (typeof window !== "undefined") {
     localStorage.clear();
   }
