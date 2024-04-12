@@ -3,13 +3,12 @@
 import { Button } from "@mui/material";
 import { useState } from "react";
 import { H2 } from "../components/ui/h2";
-import { useRouter } from "next/navigation";
 import { ErrorMessage } from "../components/ui/errorMsg";
-import Link from "next/link";
 import { InputText } from "../components/forms/inputText";
 import { useAuth } from "@/api/auth";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useTranslations } from "next-intl";
+import { Link, useRouter } from "@/lib";
 
 interface IFormInputs {
   email: string;

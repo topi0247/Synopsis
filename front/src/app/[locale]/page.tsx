@@ -1,4 +1,4 @@
-import { Link } from "@/lib/navigation";
+import { Link } from "@/lib";
 import { useTranslations } from "next-intl";
 
 export default function Home() {

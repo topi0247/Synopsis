@@ -4,12 +4,11 @@ import { Button } from "@mui/material";
 import { H2 } from "../components/ui/h2";
 import { useState } from "react";
 import { ErrorMessage } from "../components/ui/errorMsg";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { useAuth } from "@/api/auth";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { InputText } from "../components/forms/inputText";
 import { useTranslations } from "next-intl";
+import { Link, useRouter } from "@/lib";
 
 interface IFormInputs {
   name: string;

@@ -1,4 +1,5 @@
 import React from "react";
+import { H2 } from "../components/ui/h2";
 
 const tasks = [
   {
@@ -24,9 +25,7 @@ const tasks = [
 const TasksIndex = () => {
   return (
     <article className="w-full m-auto">
-      <h2 className="text-xl text-center">
-        <span className="px-4 pb-2 border-b-2 border-green-300">Task</span>
-      </h2>
+      <H2>タスク一覧</H2>
       <dl className="w-96 mx-auto my-8">
         {tasks.length > 0 ? (
           tasks.map((task) => (
