@@ -1,6 +1,7 @@
 import "@/styles/globals.css";
 import MainLayout from "./components/layouts/mainLayout";
 import AppProvider from "@/providers";
+import { NextIntlClientProvider, useMessages } from "next-intl";
 
 export default function RootLayout({
   children,
@@ -9,11 +10,15 @@ export default function RootLayout({
   children: React.ReactNode;
   params: { locale: string };
 }>) {
+  const messages = useMessages();
   return (
     <html lang={locale}>
       <body className="w-full">
-        <AppProvider locale={locale}>
-          <MainLayout>{children}</MainLayout>
+        <AppProvider>
+          {/* next-inilのプロバイダーはサーバーサイドでのみ動くのでここで設定 */}
+          <NextIntlClientProvider locale={locale} messages={messages}>
+            <MainLayout>{children}</MainLayout>
+          </NextIntlClientProvider>
         </AppProvider>
       </body>
     </html>
