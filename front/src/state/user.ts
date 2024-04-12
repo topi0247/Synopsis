@@ -1,5 +1,4 @@
 "use client";
-
 import { IUser } from "@/types";
 import { atom } from "recoil";
 

@@ -1,5 +1,21 @@
 {
   "Main": {
     "title": "認証テスト"
+  },
+  "Auth": {
+    "signup": "新規登録",
+    "to_signup": "新規登録はこちら",
+    "login": "ログイン",
+    "to_login": "ログインはこちら",
+    "logout": "ログアウト",
+    "name": "名前",
+    "email": "メールアドレス",
+    "password": "パスワード",
+    "password_confirmation": "パスワード確認",
+    "login_with_google": "Googleでログイン",
+    "signup_with_google": "Googleで新規登録",
+    "login_with_discord": "Discordでログイン",
+    "signup_with_discord": "Discordで新規登録",
+    "or": "または"
   }
 }

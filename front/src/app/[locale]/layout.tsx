@@ -2,6 +2,12 @@ import "@/styles/globals.css";
 import MainLayout from "./components/layouts/mainLayout";
 import AppProvider from "@/providers";
 import { NextIntlClientProvider, useMessages } from "next-intl";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "認証テスト",
+  description: "devise-token-authの認証テスト",
+};
 
 export default function RootLayout({
   children,

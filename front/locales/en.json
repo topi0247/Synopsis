@@ -1,5 +1,21 @@
 {
   "Main": {
     "title": "Authentication Test App"
+  },
+  "Auth": {
+    "signup": "SignUp",
+    "to_signup": "SignUp",
+    "login": "Login",
+    "to_login": "Login",
+    "logout": "Logout",
+    "name": "User Name",
+    "email": "Email",
+    "password": "Password",
+    "password_confirmation": "Password Confirmation",
+    "login_with_google": "Login with Google",
+    "signup_with_google": "SignUp with Google",
+    "login_with_discord": "Login with Discord",
+    "signup_with_discord": "SignUp with Discord",
+    "or": "or"
   }
 }

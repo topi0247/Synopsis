@@ -9,6 +9,7 @@ import Link from "next/link";
 import { useAuth } from "@/api/auth";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { InputText } from "../components/forms/inputText";
+import { useTranslations } from "next-intl";
 
 interface IFormInputs {
   name: string;
@@ -21,6 +22,7 @@ export default function SignUp() {
   const { signUp, loginWithGoogle, loginWithDiscord } = useAuth();
   const [error, setError] = useState([] as string[]);
   const router = useRouter();
+  const t_Auth = useTranslations("Auth");
 
   const { handleSubmit, control, getValues } = useForm<IFormInputs>();
 
@@ -42,7 +44,7 @@ export default function SignUp() {
     <>
       <article className="w-full flex flex-col justify-center items-center gap-8">
         <section className="flex flex-col justify-center items-center w-96">
-          <H2>新規登録</H2>
+          <H2>{t_Auth("signup")}</H2>
           <div className="flex flex-col gap-2 justify-center items-center my-8 w-full">
             <form
               className="flex flex-col gap-4 w-full"
@@ -52,7 +54,7 @@ export default function SignUp() {
               <InputText
                 control={control}
                 name="name"
-                label="名前"
+                label={t_Auth("name")}
                 rules={{
                   required: { value: true, message: "必須入力" },
                 }}
@@ -61,7 +63,7 @@ export default function SignUp() {
               <InputText
                 control={control}
                 name="email"
-                label="メールアドレス"
+                label={t_Auth("email")}
                 rules={{
                   required: { value: true, message: "入力必須" },
                   pattern: {
@@ -74,7 +76,7 @@ export default function SignUp() {
               <InputText
                 control={control}
                 name="password"
-                label="パスワード"
+                label={t_Auth("password")}
                 type="password"
                 rules={{
                   required: { value: true, message: "入力必須" },
@@ -88,7 +90,7 @@ export default function SignUp() {
               <InputText
                 control={control}
                 name="passwordConfirmation"
-                label="パスワード（確認）"
+                label={t_Auth("password_confirmation")}
                 type="password"
                 rules={{
                   required: { value: true, message: "入力必須" },
@@ -103,7 +105,7 @@ export default function SignUp() {
                 autoComplete="new-password"
               />
               <Button variant="outlined" type="submit">
-                新規登録
+                {t_Auth("signup")}
               </Button>
             </form>
             <div className="text-center">
@@ -111,16 +113,21 @@ export default function SignUp() {
                 href="/login"
                 className="text-center text-sm text-blue-500 underline hover:opacity-50 transition-all"
               >
-                ログインはこちら
+                {t_Auth("to_login")}
               </Link>
             </div>
-            <hr className="or" />
+            <div className="w-full relative h-10">
+              <div className="border-t border-green-400 w-full text-center overflow-visible absolute top-1/2 left-0" />
+              <p className="w-full text-center absolute top-[6px] left-0">
+                <span className="bg-white px-6">{t_Auth("or")}</span>
+              </p>
+            </div>
             <div className="flex gap-4">
               <Button variant="outlined" onClick={() => loginWithGoogle}>
-                Googleで新規登録
+                {t_Auth("signup_with_google")}
               </Button>
               <Button variant="outlined" onClick={() => loginWithDiscord}>
-                Discordで新規登録
+                {t_Auth("signup_with_google")}
               </Button>
             </div>
           </div>
