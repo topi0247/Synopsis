@@ -319,7 +319,7 @@ Devise.setup do |config|
   }
   config.omniauth :discord, Rails.application.credentials.discord[:client_id], Rails.application.credentials.discord[:client_secret], {
     scope: 'email identify',
-    callback_url: 'http://localhost:3000/auth/discord/callback',
+    callback_url: Rails.application.credentials.discord[:callback_url],
     provider_ignores_state: Rails.env.development?,
   }
 end

@@ -64,6 +64,7 @@ google:
 discord:
   client_id: 先ほどコピーしたDiscordのクライアントID
   client_secret: 先ほどコピーしたDiscordのシークレットキー
+  callback_url: http://localhost:3000/auth/discord/callback
 ```
 5. 保存して閉じる（`:wq`）
 
