@@ -312,14 +312,14 @@ Devise.setup do |config|
   # config.sign_in_after_change_password = true
 
   # OmniAuth
-  config.omniauth :google_oauth2, Rails.application.credentials.google[:client_id], Rails.application.credentials.google[:client_secret], {
+  config.omniauth :google_oauth2, ENV['GOOGLE_CLIENT_ID'], ENV['GOOGLE_CLIENT_SECRET'], {
     scope: 'email,profile',
     prompt: 'select_account',
     provider_ignores_state: Rails.env.development?,
   }
-  config.omniauth :discord, Rails.application.credentials.discord[:client_id], Rails.application.credentials.discord[:client_secret], {
+  config.omniauth :discord, ENV['DISCORD_CLIENT_ID'], ENV['DISCORD_CLIENT_SECRET'], {
     scope: 'email identify',
-    callback_url: Rails.application.credentials.discord[:callback_url],
+    callback_url: ENV['DISCORD_CALLBACK_URL'],
     provider_ignores_state: Rails.env.development?,
   }
 end
