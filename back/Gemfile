@@ -60,7 +60,7 @@ gem 'omniauth'
 gem 'omniauth-google-oauth2'
 gem 'omniauth-discord'
 # CSRF対策用
-# gem "omniauth-rails_csrf_protection"
+gem "omniauth-rails_csrf_protection"
 # フロントとバックを分けているので同じサイト判定させるためのgem
 gem 'rails_same_site_cookie'
 # 設定

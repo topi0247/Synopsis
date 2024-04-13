@@ -8,7 +8,26 @@ class Users::RegistrationsController < DeviseTokenAuth::RegistrationsController
       if resource.persisted?
         if resource.active_for_authentication?
           # 自動ログイン
-          sign_in(resource_name, resource)
+          sign_in(resource)
+
+          # トークンを生成
+          client_id = SecureRandom.urlsafe_base64(nil, false)
+          token     = SecureRandom.urlsafe_base64(nil, false)
+          token_hash = BCrypt::Password.create(token)
+          expiry    = (Time.now + DeviseTokenAuth.token_lifespan).to_i
+
+          resource.tokens[client_id] = {
+            token:  token_hash,
+            expiry: expiry
+          }
+
+          resource.save!
+
+          response.headers['uid'] = resource.uid
+          response.headers['client'] = client_id
+          response.headers['expiry'] = expiry
+          response.headers['access-token'] = token
+
           # 認証トークンとユーザー情報を含むJSONを返す
           render json: {
             success: true,
