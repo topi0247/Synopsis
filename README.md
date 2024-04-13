@@ -73,8 +73,8 @@ NEXT_PUBLIC_API_VERSION=v1
 
 インフラ
 - Docker
-- バック：Heroku（本環境確認はまだ）
-- DB：MySQL（本環境確認はまだ）
-- フロント：Vercel（動いてるかの確認はまだ）
+- バック：Heroku
+- DB：MySQL
+- フロント：Vercel
 
 記述日　2024/04/12 14:11現在
